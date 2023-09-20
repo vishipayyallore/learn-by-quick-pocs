@@ -1,0 +1,22 @@
+<mat-toolbar color="primary">
+  <span>
+    <a routerLink="" mat-button> <mat-icon>school</mat-icon> School </a>
+  </span>
+
+  <div>
+    <a mat-button routerLink="products"> Login </a>
+  </div>
+
+  <div class="space"></div>
+
+  <div class="logged-in">
+    <img src="./assets/images/user.png" alt="Sri Varu" />
+    <button mat-button [matMenuTriggerFor]="afterMenu">
+      Welcome, Sri Varu
+    </button>
+    <mat-menu #afterMenu="matMenu" xPosition="after">
+      <button mat-menu-item>Edit Profile</button>
+      <button mat-menu-item>Logout</button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

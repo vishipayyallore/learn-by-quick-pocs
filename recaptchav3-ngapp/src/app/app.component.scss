@@ -1,0 +1,50 @@
+.container {
+    margin: 20px;
+    background-color: rgb(242, 249, 252);
+    padding: 20px;
+    border-radius: 25px;
+    border: solid 1px navy;
+    box-shadow: 3px 3px;
+}
+
+.main-container {
+    min-height: calc(100vh - 85px);
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+// .container {
+//     flex-wrap: wrap;
+//     margin: 0 20 auto;
+//     max-width: 1250px;
+//     padding: 20px;
+//     background-color: rgb(242, 249, 252);
+//     margin-bottom: 20px;
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: space-between;
+// }
+
+.container-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 1250px;
+    padding: 20px;
+    background-color: rgb(242, 249, 252);
+    text-align: center;
+    // margin-bottom: 5px;
+}
+
+h1 {
+    color: navy;
+}
+
+.example-card {
+    max-width: 400px;
+}
+
+button {
+    margin-right: 5px;
+}
