@@ -20,6 +20,7 @@ export class SignupComponent implements OnInit {
     this.recaptchaV3Service.execute('importantAction')
       .subscribe((token: string) => {
         this.token = token;
+        this.formData.recaptchaToken = token; // Set the token in the form
         console.log(`Token [${token}] generated`);
       });
   }
@@ -27,17 +28,17 @@ export class SignupComponent implements OnInit {
   onSubmit() {
 
     console.log('Form data', this.formData);
-    
+
     // Send the form data including the token to your /register endpoint
     // Replace 'your_api_endpoint' with the actual API endpoint URL
-    this.http.post('your_api_endpoint/register', this.formData)
-      .subscribe((response) => {
-        console.log('Registration successful', response);
-        // Handle success response here
-      }, (error) => {
-        console.error('Registration failed', error);
-        // Handle error response here
-      });
+    // this.http.post('your_api_endpoint/register', this.formData)
+    //   .subscribe((response) => {
+    //     console.log('Registration successful', response);
+    //     // Handle success response here
+    //   }, (error) => {
+    //     console.error('Registration failed', error);
+    //     // Handle error response here
+    //   });
   }
 
 }
