@@ -8,23 +8,11 @@
 }
 
 .main-container {
-    min-height: calc(100vh - 110px);
+    min-height: calc(100vh - 102px);
     margin-top: 10px;
     margin-left: 20px;
     margin-right: 20px;
 }
-
-// .container {
-//     flex-wrap: wrap;
-//     margin: 0 20 auto;
-//     max-width: 1250px;
-//     padding: 20px;
-//     background-color: rgb(242, 249, 252);
-//     margin-bottom: 20px;
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: space-between;
-// }
 
 .container-header {
     flex-wrap: wrap;
