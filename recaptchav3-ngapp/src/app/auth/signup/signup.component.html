@@ -1,34 +1,57 @@
 <div class="container border-1 shadow-sm border-primary bg-light">
   <h2 id="title">Sign Up</h2>
 
-  <form id="formSignup" action="" method="post">
-    <input type="email" id="txtEmail" placeholder="Email Address" />
+  <form id="formSignup" (ngSubmit)="onSubmit()" #signupForm="ngForm">
+    <input
+      type="email"
+      id="txtEmail"
+      placeholder="Email Address"
+      name="email"
+      [(ngModel)]="formData.email"
+      required
+    />
     <br />
     <br />
-    <input type="password" id="txtPassword" placeholder="Password" />
+    <input
+      type="password"
+      id="txtPassword"
+      placeholder="Password"
+      name="password"
+      [(ngModel)]="formData.password"
+      required
+    />
     <br />
     <br />
     <input
       type="password"
       id="txtConfirmPassword"
       placeholder="Confirm Password"
+      name="confirmPassword"
+      [(ngModel)]="formData.confirmPassword"
+      required
     />
     <br />
     <br />
-    <input type="text" id="txtName" placeholder="Full Name" />
+    <input
+      type="text"
+      id="txtName"
+      placeholder="Full Name"
+      name="fullName"
+      [(ngModel)]="formData.fullName"
+      required
+    />
     <br />
     <br />
     <button class="btn btn-primary shadow-sm" type="submit" id="btnSignup">
       Sign up
     </button>
 
-    <!-- <br /> -->
     <p>reCAPTCHA Token (Valid for 2 minutes)</p>
     <input
       type="text"
       id="g-recaptcha-response"
       name="g-recaptcha-response"
-      value="{{ token }}"
+      [(ngModel)]="formData.recaptchaToken"
     />
   </form>
 </div>
