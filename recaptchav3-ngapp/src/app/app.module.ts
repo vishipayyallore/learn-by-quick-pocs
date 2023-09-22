@@ -16,12 +16,14 @@ import { RouterLinkWithHref } from '@angular/router';
 
 import { FooterComponent } from '../app/core/layout/footer/footer.component';
 import { HeaderComponent } from '../app/core/layout/header/header.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FooterComponent,
     HeaderComponent,
+    SignupComponent,
   ],
   imports: [
     BrowserModule,
