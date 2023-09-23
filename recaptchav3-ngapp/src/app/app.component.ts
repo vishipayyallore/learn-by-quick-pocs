@@ -16,11 +16,11 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     console.log('App component initialized!');
 
-    this.recaptchaV3Service.execute('importantAction')
-      .subscribe((token: string) => {
-        this.token = token;
-        console.log(`Token [${token}] generated`);
-      });
+    // this.recaptchaV3Service.execute('importantAction')
+    //   .subscribe((token: string) => {
+    //     this.token = token;
+    //     console.log(`Token [${token}] generated`);
+    //   });
 
   }
 }
