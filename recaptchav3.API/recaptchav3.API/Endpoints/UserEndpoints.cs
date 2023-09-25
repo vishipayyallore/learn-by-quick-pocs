@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using recaptchav3.API.Dtos;
 using System.Text.Json;
 
 namespace recaptchav3.API.Endpoints;
@@ -24,46 +25,10 @@ public static class UserEndpoints
             var response = await httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
             var captchaResponse = response.Content.ReadAsStringAsync().Result;
 
-            // var captchaResponse = JsonSerializer.Deserialize<CaptchaResponse>(result);
-
             return ApiResponseDto<dynamic>.Create(captchaResponse);
         }).WithTags("Users")
           .WithName("Sign Up")
           .WithOpenApi();
     }
 
-}
-
-
-public record UserRegistrationDto(
-    string Email,
-    string Password,
-    string ConfirmPassword,
-    string Fullname,
-    string RecaptchaToken);
-
-
-// Define a class to deserialize the reCAPTCHA response
-public class CaptchaResponse
-{
-    public bool Success { get; set; }
-}
-
-public record ApiResponseDto<T>
-{
-    public bool Success { get; set; }
-
-    public string? Message { get; set; }
-
-    public T? Data { get; set; }
-
-    public static ApiResponseDto<T> Create(T? data = default, string message = "Success", bool success = true)
-    {
-        return new()
-        {
-            Success = success,
-            Message = message,
-            Data = data
-        };
-    }
 }
