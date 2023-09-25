@@ -22,11 +22,11 @@ public static class UserEndpoints
             });
 
             var response = await httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
-            var result = response.Content.ReadAsStringAsync().Result;
+            var captchaResponse = response.Content.ReadAsStringAsync().Result;
 
-            var captchaResponse = JsonSerializer.Deserialize<CaptchaResponse>(result);
+            // var captchaResponse = JsonSerializer.Deserialize<CaptchaResponse>(result);
 
-            return captchaResponse!.Success;
+            return ApiResponseDto<dynamic>.Create(captchaResponse);
         }).WithTags("Users")
           .WithName("Sign Up")
           .WithOpenApi();
@@ -47,4 +47,23 @@ public record UserRegistrationDto(
 public class CaptchaResponse
 {
     public bool Success { get; set; }
+}
+
+public record ApiResponseDto<T>
+{
+    public bool Success { get; set; }
+
+    public string? Message { get; set; }
+
+    public T? Data { get; set; }
+
+    public static ApiResponseDto<T> Create(T? data = default, string message = "Success", bool success = true)
+    {
+        return new()
+        {
+            Success = success,
+            Message = message,
+            Data = data
+        };
+    }
 }

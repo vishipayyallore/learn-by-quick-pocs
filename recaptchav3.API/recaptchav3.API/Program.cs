@@ -1,3 +1,5 @@
+using recaptchav3.API.Endpoints;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,9 +18,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/signup", async () =>
-{
-
-});
+app.MapUserEndpoints();
 
 app.Run();
