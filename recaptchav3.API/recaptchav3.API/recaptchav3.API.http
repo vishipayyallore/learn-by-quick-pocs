@@ -1,0 +1,5 @@
+@recaptchav3.API_HostAddress = https://localhost:7199
+
+POST {{recaptchav3.API_HostAddress}}/signup
+
+###
