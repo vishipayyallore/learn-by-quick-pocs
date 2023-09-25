@@ -16,4 +16,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapPost("/signup", async () =>
+{
+
+});
+
 app.Run();
