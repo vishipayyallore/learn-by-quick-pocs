@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using recaptchav3.API.Common;
 using recaptchav3.API.Dtos;
-using System.Text.Json;
 
 namespace recaptchav3.API.Endpoints;
 
@@ -9,9 +9,8 @@ public static class UserEndpoints
     public static void MapUserEndpoints(this IEndpointRouteBuilder routes)
     {
 
-        _ = routes.MapPost("/signup", async ([FromBody] UserRegistrationDto userRegistrationDto) =>
+        _ = routes.MapPost(Constants.UserEndpoints.SignUp, async ([FromBody] UserRegistrationDto userRegistrationDto) =>
         {
-
             string secretKey = "Your_Secret_Key";
             string responseToken = userRegistrationDto.RecaptchaToken;
 
