@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // Import HttpClient
 import { ReCaptchaV3Service } from 'ng-recaptcha';
+import RecaptchaResponse from '../../interfaces/RecaptchaResponse'; // Import the RecaptchaResponse interface
 
 @Component({
   selector: 'sv-signup',
@@ -31,14 +32,16 @@ export class SignupComponent implements OnInit {
 
     // Send the form data including the token to your /register endpoint
     // Replace 'your_api_endpoint' with the actual API endpoint URL
-    // this.http.post('your_api_endpoint/register', this.formData)
-    //   .subscribe((response) => {
-    //     console.log('Registration successful', response);
-    //     // Handle success response here
-    //   }, (error) => {
-    //     console.error('Registration failed', error);
-    //     // Handle error response here
-    //   });
+    this.http.post<RecaptchaResponse>('https://localhost:7199/signup', this.formData)
+      .subscribe((response) => {
+        console.log(`POST response: ${response}`);
+        const parsedResponse: RecaptchaResponse = response;
+        console.log('Registration successful', response);
+        // Handle success response here
+      }, (error) => {
+        console.error('Registration failed', error);
+        // Handle error response here
+      });
   }
 
 }
