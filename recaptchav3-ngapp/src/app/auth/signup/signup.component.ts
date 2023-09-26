@@ -13,6 +13,7 @@ export class SignupComponent implements OnInit {
   formData: any = {}; // Initialize an empty object for form data
   success: boolean | undefined; // Add a property for success
   score: number | undefined;    // Add a property for score
+  errorCodes: string[] = [];    // Add a property for error codes
 
   constructor(private recaptchaV3Service: ReCaptchaV3Service, private http: HttpClient, private cdr: ChangeDetectorRef) {
   }
@@ -50,8 +51,9 @@ export class SignupComponent implements OnInit {
         this.success = parsedData.success;
         this.score = parsedData.score;
 
-        // Manually trigger change detection
-        // this.cdr.detectChanges();
+        if(!this.success) {
+          this.errorCodes = parsedData['error-codes'];
+        }
 
         // Handle success response here
       }, (error) => {

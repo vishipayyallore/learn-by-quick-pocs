@@ -58,15 +58,22 @@
       <!-- Display the "success" value -->
       <div class="inline-item">
         <p>Success:</p>
-        <span>{{ success ? 'Yes' : 'No' }}</span>
+        <span [ngClass]="{ 'success-text': success, 'error-text': !success }">
+          {{ success ? "Yes" : "No" }}
+        </span>
       </div>
-    
+
       <!-- Display the "score" value -->
       <div class="inline-item">
         <p>Score:</p>
         <span>{{ score }}</span>
       </div>
     </div>
-    
+    <!-- Display error codes in a separate div when success is false -->
+    <div *ngIf="!success" class="error-container">
+      <ul>
+        <li *ngFor="let errorCode of errorCodes">{{ errorCode }}</li>
+      </ul>
+    </div>
   </form>
 </div>

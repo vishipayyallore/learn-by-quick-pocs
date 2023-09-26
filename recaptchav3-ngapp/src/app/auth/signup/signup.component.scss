@@ -9,12 +9,39 @@
 
 .inline-container {
     display: flex;
-    /* Use flexbox to make child divs display side by side */
 }
 
 .inline-item {
     margin-right: 20px;
-    /* Add some spacing between the divs (adjust as needed) */
     display: flex;
     align-items: center;
 }
+
+.success-text {
+    color: green;
+}
+
+.error-text {
+    color: red;
+}
+
+/* CSS for the error container */
+.error-container {
+    margin-top: 10px; /* Add spacing between the success and error sections */
+    background-color: #ffcccc; /* Background color for the error container */
+    padding: 10px; /* Padding for the error container */
+    border: 1px solid #ff0000; /* Red border for the error container */
+    border-radius: 4px; /* Rounded corners for the error container */
+  }
+  
+  /* CSS for the error code list */
+  .error-container ul {
+    list-style-type: square; /* Change the list item marker to squares */
+  }
+  
+  /* CSS for individual error code list items */
+  .error-container li {
+    color: #ff0000; /* Red text color for error code list items */
+    margin-left: 15px; /* Add indentation to the left of list items */
+  }
+  
