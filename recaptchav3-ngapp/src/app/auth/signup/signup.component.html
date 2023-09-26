@@ -53,5 +53,20 @@
       name="g-recaptcha-response"
       [(ngModel)]="formData.recaptchaToken"
     />
+
+    <div class="inline-container">
+      <!-- Display the "success" value -->
+      <div class="inline-item">
+        <p>Success:</p>
+        <span>{{ success ? 'Yes' : 'No' }}</span>
+      </div>
+    
+      <!-- Display the "score" value -->
+      <div class="inline-item">
+        <p>Score:</p>
+        <span>{{ score }}</span>
+      </div>
+    </div>
+    
   </form>
 </div>

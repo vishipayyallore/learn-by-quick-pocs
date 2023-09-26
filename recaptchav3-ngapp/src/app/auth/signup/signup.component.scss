@@ -6,3 +6,15 @@
     border: solid 1px navy;
     box-shadow: 3px 3px;
 }
+
+.inline-container {
+    display: flex;
+    /* Use flexbox to make child divs display side by side */
+}
+
+.inline-item {
+    margin-right: 20px;
+    /* Add some spacing between the divs (adjust as needed) */
+    display: flex;
+    align-items: center;
+}
