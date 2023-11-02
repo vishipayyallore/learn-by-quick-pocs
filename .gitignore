@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/recaptchav3.API/recaptchav3.API/appsettings.json
+/recaptchav3-ngapp/src/environments/environment.ts
+/recaptchav3.APINjTs/.env
