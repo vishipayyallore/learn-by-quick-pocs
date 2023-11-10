@@ -24,8 +24,12 @@ export class SignupComponent implements OnInit {
     // this.getRecaptchaToken();
     // console.log(`ngOnInit() :: Token [${this.token}] generated at ${new Date().toTimeString()}`);
 
-    this.token = await this.getRecaptchaTokenV2();
-    console.log(`ngOnInit() :: Token V2 [${this.token}] generated at ${new Date().toTimeString()}`);
+    // this.token = await this.getRecaptchaTokenV2();
+    // console.log(`ngOnInit() :: Token V2 [${this.token}] generated at ${new Date().toTimeString()}`);
+    // this.formData.recaptchaToken = this.token; // Set the token in the form
+
+    this.token = await this.recaptchaV3Service.execute('importantAction').toPromise();
+    console.log(`ngOnInit() :: Token V3 [${this.token}] generated at ${new Date().toTimeString()}`);
     this.formData.recaptchaToken = this.token; // Set the token in the form
 
     // this.recaptchaV3Service.execute('importantAction')
