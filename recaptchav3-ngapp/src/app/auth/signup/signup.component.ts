@@ -18,10 +18,15 @@ export class SignupComponent implements OnInit {
   constructor(private recaptchaV3Service: ReCaptchaV3Service, private http: HttpClient, private cdr: ChangeDetectorRef) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log('Signup component initialized at ', new Date().toTimeString());
-    
-    this.getRecaptchaToken();
+
+    // this.getRecaptchaToken();
+    // console.log(`ngOnInit() :: Token [${this.token}] generated at ${new Date().toTimeString()}`);
+
+    this.token = await this.getRecaptchaTokenV2();
+    console.log(`ngOnInit() :: Token V2 [${this.token}] generated at ${new Date().toTimeString()}`);
+    this.formData.recaptchaToken = this.token; // Set the token in the form
 
     // this.recaptchaV3Service.execute('importantAction')
     //   .subscribe((token: string) => {
@@ -35,10 +40,15 @@ export class SignupComponent implements OnInit {
 
   // This function should make synchronous calls to the recaptchaV3Service
   async getRecaptchaToken() {
-    const token = await this.recaptchaV3Service.execute('importantAction').toPromise();
-    this.token = token;
-    this.formData.recaptchaToken = token; // Set the token in the form
-    console.log(`Token [${token}] generated at ${new Date().toTimeString()}`);
+    this.token = await this.recaptchaV3Service.execute('importantAction').toPromise();
+    this.cdr.detectChanges();
+    this.formData.recaptchaToken = this.token; // Set the token in the form
+    console.log(`getRecaptchaToken() :: Token [${this.token}] generated at ${new Date().toTimeString()}`);
+
+  }
+
+  async getRecaptchaTokenV2() {
+    return await this.recaptchaV3Service.execute('importantAction').toPromise();
   }
 
   onSubmit() {
