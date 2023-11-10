@@ -9,7 +9,7 @@ import RecaptchaResponse from '../../interfaces/RecaptchaResponse'; // Import th
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
-  token: string = '';
+  token?: string = '';
   formData: any = {}; // Initialize an empty object for form data
   success: boolean | undefined; // Add a property for success
   score: number | undefined;    // Add a property for score
@@ -19,16 +19,26 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Signup component initialized!');
+    console.log('Signup component initialized at ', new Date().toTimeString());
+    
+    this.getRecaptchaToken();
 
-    this.recaptchaV3Service.execute('importantAction')
-      .subscribe((token: string) => {
-        this.token = token;
-        this.formData.recaptchaToken = token; // Set the token in the form
-        console.log(`Token [${token}] generated at ${new Date().toTimeString()}`);
-      });
+    // this.recaptchaV3Service.execute('importantAction')
+    //   .subscribe((token: string) => {
+    //     this.token = token;
+    //     this.formData.recaptchaToken = token; // Set the token in the form
+    //     console.log(`Token [${token}] generated at ${new Date().toTimeString()}`);
+    //   });
 
-    console.log('Token', this.token, 'at ', new Date().toTimeString());
+    // console.log('Token', this.token, 'at ', new Date().toTimeString());
+  }
+
+  // This function should make synchronous calls to the recaptchaV3Service
+  async getRecaptchaToken() {
+    const token = await this.recaptchaV3Service.execute('importantAction').toPromise();
+    this.token = token;
+    this.formData.recaptchaToken = token; // Set the token in the form
+    console.log(`Token [${token}] generated at ${new Date().toTimeString()}`);
   }
 
   onSubmit() {
