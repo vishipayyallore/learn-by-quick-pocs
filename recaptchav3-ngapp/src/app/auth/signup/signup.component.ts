@@ -25,8 +25,10 @@ export class SignupComponent implements OnInit {
       .subscribe((token: string) => {
         this.token = token;
         this.formData.recaptchaToken = token; // Set the token in the form
-        console.log(`Token [${token}] generated`);
+        console.log(`Token [${token}] generated at ${new Date().toTimeString()}`);
       });
+
+    console.log('Token', this.token, 'at ', new Date().toTimeString());
   }
 
   onSubmit() {
