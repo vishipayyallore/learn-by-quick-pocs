@@ -25,8 +25,8 @@ const s3Options = {
 };
 
 const s3 = new S3(s3Options);
-const bucketName = 'eshop-microservices-bucket';
-const key = 'videos/1080p.mp4';
+const bucketName = process.env.BUCKET_NAME;
+const key = process.env.VIDEO_KEY;
 
 app.use(express.static(path.join(__dirname, 'frontend')));
 
