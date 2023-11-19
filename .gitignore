@@ -413,3 +413,5 @@ terragrunt-demo1/infrastructure-live-tg/dev/vpc/.terragrunt-cache/-KxoduDJPgVM0_
 terragrunt-demo1/infrastructure-live-tg/dev/vpc/.terragrunt-cache/-KxoduDJPgVM0_kjXBVv8JJzyss/NHtg5V85xV6qqgaNM6cyncQrGEI/.terraform/terraform.tfstate
 terragrunt-demo1/infrastructure-live-tg/dev/vpc/.terragrunt-cache/-KxoduDJPgVM0_kjXBVv8JJzyss/NHtg5V85xV6qqgaNM6cyncQrGEI/dev/vpc/terraform.tfstate
 terragrunt-demo1/infrastructure-live-tg/dev/vpc/.terragrunt-cache/-KxoduDJPgVM0_kjXBVv8JJzyss/NHtg5V85xV6qqgaNM6cyncQrGEI/dev/vpc/terraform.tfstate.backup
+video-streaming/.env
+**/videos/*
