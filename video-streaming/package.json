@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js --trace-warnings",
     "start": "node app.js --trace-warnings"
   },
   "keywords": [],
@@ -16,5 +17,8 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "range-parser": "^1.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

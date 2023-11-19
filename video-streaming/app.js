@@ -2,9 +2,7 @@ const express = require('express');
 const range = require('range-parser');
 const fs = require('fs');
 const path = require('path');
-const {
-    S3,
-} = require('@aws-sdk/client-s3');
+const { S3 } = require('@aws-sdk/client-s3');
 const dotenv = require('dotenv');
 const { Readable } = require('stream');
 const { EventEmitter } = require('events');
@@ -62,64 +60,56 @@ app.get('/api/video', (req, res) => {
     videoStream.pipe(res);
 });
 
-app.get('/api/videoaws', (req, res) => {
+app.get('/api/videoaws', async (req, res) => {
+
     const params = {
         Bucket: bucketName,
         Key: key,
     };
 
-    s3.headObject(params, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-
-        const videoSize = data.ContentLength;
-        const rangeRequest = range(videoSize, req.headers.range, { combine: true });
+    try {
+        const { ContentLength } = await s3.headObject(params);
+        const rangeRequest = range(ContentLength, req.headers.range, { combine: true });
 
         if (rangeRequest === -1) {
-            // Invalid range
             res.status(416).send('Requested Range Not Satisfiable');
             return;
         }
+
         const { start, end } = rangeRequest[0];
+        const chunkSize = 65536 * 6; // for example, adjust as needed
 
-        const chunkSize = 65536; // for example, adjust as needed
-
-        const headers = {
-            'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+        const responseHeaders = {
+            'Content-Range': `bytes ${start}-${end}/${ContentLength}`,
             'Accept-Ranges': 'bytes',
             'Content-Length': chunkSize,
             'Content-Type': 'video/mp4',
         };
 
-        res.writeHead(206, headers);
+        res.writeHead(206, responseHeaders);
 
-        console.log(params, start, end, chunkSize);
-        const s3Stream = s3.getObject(params).createReadStream({ Range: `bytes=${start}-${end}` });
+        const rangeParams = {
+            Bucket: bucketName,
+            Key: key,
+            Range: `bytes=${start}-${end}`,
+        };
 
-        // Convert the S3 stream to a Node.js Readable stream
-        const readableStream = Readable.from(s3Stream); //new Readable();
+        // Use createReadStream from aws-sdk
+        s3.getObject(rangeParams).then(data => {
+            const readable = Readable.from(data.Body);
+
+            // Pipe the S3 stream directly to the response
+            readable?.pipe(res);
+        });
 
         // Log headers
-        console.log(headers);
+        console.log(responseHeaders);
 
-        // Log errors
-        s3Stream.on('error', (error) => {
-            console.error('S3 Stream Error:', error);
-        });
-
-        readableStream.on('error', (error) => {
-            console.error('Readable Stream Error:', error);
-        });
-
-        res.on('error', (error) => {
-            console.error('Response Stream Error:', error);
-        });
-
-        readableStream.pipe(res);
-    });
+        
+    } catch (error) {
+        console.error('S3 HeadObject Error:', error);
+        // res.status(500).send('Internal Server Error');
+    }
 });
 
 app.listen(port, () => {
