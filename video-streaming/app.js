@@ -5,20 +5,29 @@ const path = require('path');
 const {
     S3,
 } = require('@aws-sdk/client-s3');
+const dotenv = require('dotenv');
+const { Readable } = require('stream');
+const { EventEmitter } = require('events');
+EventEmitter.defaultMaxListeners = 15; // set a higher limit, adjust as needed
 
 const app = express();
 const port = 3000;
 
 // NOTE: It should pickup the credentails from the .aws/credentials file
-// Configure AWS SDK with your credentials
-// AWS.config.update({
-//     accessKeyId: 'YOUR_ACCESS_KEY',
-//     secretAccessKey: 'YOUR_SECRET_KEY',
-//     region: 'YOUR_AWS_REGION',
-// });
+dotenv.config();
 
-const s3 = new S3();
-const bucketName = 'your-s3-bucket-eshop-microservices-bucket';
+console.log(process.env.ACCESS_KEY_ID, process.env.SECRET_ACCESS_KEY, process.env.REGION);
+
+const s3Options = {
+    region: process.env.REGION,
+    credentials: {
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY
+    }
+};
+
+const s3 = new S3(s3Options);
+const bucketName = 'eshop-microservices-bucket';
 const key = 'videos/1080p.mp4';
 
 app.use(express.static(path.join(__dirname, 'frontend')));
@@ -76,7 +85,8 @@ app.get('/api/videoaws', (req, res) => {
         }
         const { start, end } = rangeRequest[0];
 
-        const chunkSize = end - start + 1;
+        const chunkSize = 65536; // for example, adjust as needed
+
         const headers = {
             'Content-Range': `bytes ${start}-${end}/${videoSize}`,
             'Accept-Ranges': 'bytes',
@@ -86,8 +96,29 @@ app.get('/api/videoaws', (req, res) => {
 
         res.writeHead(206, headers);
 
+        console.log(params, start, end, chunkSize);
         const s3Stream = s3.getObject(params).createReadStream({ Range: `bytes=${start}-${end}` });
-        s3Stream.pipe(res);
+
+        // Convert the S3 stream to a Node.js Readable stream
+        const readableStream = Readable.from(s3Stream); //new Readable();
+
+        // Log headers
+        console.log(headers);
+
+        // Log errors
+        s3Stream.on('error', (error) => {
+            console.error('S3 Stream Error:', error);
+        });
+
+        readableStream.on('error', (error) => {
+            console.error('Readable Stream Error:', error);
+        });
+
+        res.on('error', (error) => {
+            console.error('Response Stream Error:', error);
+        });
+
+        readableStream.pipe(res);
     });
 });
 
