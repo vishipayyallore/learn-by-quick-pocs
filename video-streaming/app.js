@@ -77,7 +77,7 @@ app.get('/api/videoaws', async (req, res) => {
         }
 
         const { start, end } = rangeRequest[0];
-        const chunkSize = 65536 * 6; // for example, adjust as needed
+        const chunkSize = 3e6; // for example, adjust as needed
 
         const responseHeaders = {
             'Content-Range': `bytes ${start}-${end}/${ContentLength}`,
@@ -105,7 +105,7 @@ app.get('/api/videoaws', async (req, res) => {
         // Log headers
         console.log(responseHeaders);
 
-        
+
     } catch (error) {
         console.error('S3 HeadObject Error:', error);
         // res.status(500).send('Internal Server Error');
