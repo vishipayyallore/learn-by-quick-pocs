@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // Import HttpClient
 import RecaptchaResponse from '../../interfaces/RecaptchaResponse'; // Import the RecaptchaResponse interface
 import { RecaptchaTokenService } from 'src/app/services/recaptcha-token.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'sv-signup',
@@ -33,35 +34,41 @@ export class SignupComponent implements OnInit {
     const dotNetURL = 'https://localhost:7199/signup';
     const nodeJsURL = 'http://localhost:6060/signup';
 
-    this.recaptchaTokenService.getRecaptchaToken()
-      .then((token: string | undefined) => {
+    this.recaptchaTokenService.getRecaptchaToken();
+
+    this.recaptchaTokenService.token$.pipe(first())
+      .subscribe((token: string | undefined) => {
+
         if (token) {
           this.formData.recaptchaToken = token;
 
+          // Never do this in production! Component should only render UI
+          // Service should handle the API calls
           this.http.post(nodeJsURL, this.formData)
-            .subscribe((response: any) => {
-              console.log('POST response:', response);
-              const parsedResponse: RecaptchaResponse = response as RecaptchaResponse;
-              console.log('Registration successful', response, parsedResponse.data.score);
+            .subscribe({
+              next: (response: any) => {
+                console.log('POST response:', response);
+                const parsedResponse: RecaptchaResponse = response as RecaptchaResponse;
+                console.log('Registration successful', response, parsedResponse.data.score);
 
-              // Remove newline characters from the data property
-              const parsedData = (typeof response.data === 'object') ? response.data : JSON.parse(response.data.replace(/\n/g, ''));
+                // Remove newline characters from the data property
+                const parsedData = (typeof response.data === 'object') ? response.data : JSON.parse(response.data.replace(/\n/g, ''));
 
-              // Now, parsedData contains the JSON object without newline characters
-              console.log(parsedData);
+                // Now, parsedData contains the JSON object without newline characters
+                console.log(parsedData);
 
-              // Access the success and score properties from parsedData
-              this.success = parsedData.success;
-              this.score = parsedData.score;
+                // Access the success and score properties from parsedData
+                this.success = parsedData.success;
+                this.score = parsedData.score;
 
-              if (!this.success) {
-                this.errorCodes = parsedData['error-codes'];
+                if (!this.success) {
+                  this.errorCodes = parsedData['error-codes'];
+                }
+              },
+              error: (error) => {
+                console.error('Registration failed', error);
+                // Handle error response here
               }
-
-              // Handle success response here
-            }, (error) => {
-              console.error('Registration failed', error);
-              // Handle error response here
             });
         }
         console.log(`onSubmit() :: Token [${token}] generated at ${new Date().toTimeString()}`);
