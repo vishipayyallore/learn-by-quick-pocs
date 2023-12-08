@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import RecaptchaResponse from '../interfaces/RecaptchaResponse';
 import { RecaptchaTokenService } from './recaptcha-token.service';
 
@@ -15,18 +15,20 @@ export class SignUpService {
   constructor(private http: HttpClient, private recaptchaTokenService: RecaptchaTokenService) { }
 
   private requestSignUp<T>(formData: any): Observable<T> {
-    return this.recaptchaTokenService.getRecaptchaToken().pipe(
-      switchMap((token: string, _) => {
-        formData.recaptchaToken = token;
+    return this.recaptchaTokenService
+      .getRecaptchaToken()
+      .pipe(
+        switchMap((token: string, _) => {
+          formData.recaptchaToken = token;
 
-        return this.http.post<T>(this.NODE_JS_URL, formData);
-      })
-    );
+          return this.http.post<T>(this.NODE_JS_URL, formData);
+        })
+      );
   }
 
   signup(formData: any) {
-    return this.requestSignUp<any>(formData).subscribe({
-      next: (response: any) => {
+    return this.requestSignUp<any>(formData).pipe(
+      map((response: any) => {
         console.log('POST response:', response);
         const parsedResponse: RecaptchaResponse = response as RecaptchaResponse;
         console.log('Registration successful', response, parsedResponse.data.score);
@@ -34,20 +36,19 @@ export class SignUpService {
         // Remove newline characters from the data property
         const parsedData = (typeof response.data === 'object') ? response.data : JSON.parse(response.data.replace(/\n/g, ''));
 
-        // Now, parsedData contains the JSON object without newline characters
-        console.log(parsedData);
+        console.log({ parsedData });
 
-        return parsedData;
-      },
-      error: (error) => {
+        return { success: true, data: parsedData, error: null };
+      }),
+      catchError((error: any) => {
         console.error('Registration failed', error);
-        // Handle error response here
+        return of({ success: false, data: null, error });
       }
-    })
+      )
+    );
   }
 
 }
-
 
 // private onSignUpRequest(formData: any) {
 //   this.requestSignUp<any>(formData).subscribe({

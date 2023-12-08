@@ -1,8 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // Import HttpClient
-import RecaptchaResponse from '../../interfaces/RecaptchaResponse'; // Import the RecaptchaResponse interface
-import { RecaptchaTokenService } from 'src/app/services/recaptcha-token.service';
-import { first } from 'rxjs';
+import { SignUpService } from 'src/app/services/sign-up.service';
 
 @Component({
   selector: 'sv-signup',
@@ -16,7 +14,7 @@ export class SignupComponent implements OnInit {
   score: number | undefined;    // Add a property for score
   errorCodes: string[] = [];    // Add a property for error codes
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private recaptchaTokenService: RecaptchaTokenService) {
+  constructor(private signUpService: SignUpService) {
   }
 
   async ngOnInit() {
@@ -26,11 +24,31 @@ export class SignupComponent implements OnInit {
   onSubmit() {
     console.log('Form data', this.formData);
 
-    const dotNetURL = 'https://localhost:7199/signup';
-    const nodeJsURL = 'http://localhost:6060/signup';
+    this.signUpService.signup(this.formData).subscribe(({ success, data, error }) => {
+      if (success) {
+        this.onSignupSuccess(data);
+      } else {
+        this.onSignupError(error);
+      }
+    });
+  }
+
+  onSignupError(error: any) {
+    this.success = false;
+    this.score = -1;
+
+    console.error('Registration failed', error);
+  }
+
+  onSignupSuccess(parsedData: any) {
+    this.success = parsedData.success;
+    this.score = parsedData.score;
   }
 
 }
+
+// const dotNetURL = 'https://localhost:7199/signup';
+//     const nodeJsURL = 'http://localhost:6060/signup';
 
 // this.recaptchaTokenService.getRecaptchaToken();
 
