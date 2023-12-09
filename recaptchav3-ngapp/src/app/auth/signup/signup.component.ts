@@ -1,5 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
+import { Component, OnInit } from '@angular/core';
 import { SignUpService } from 'src/app/services/sign-up.service';
 
 @Component({

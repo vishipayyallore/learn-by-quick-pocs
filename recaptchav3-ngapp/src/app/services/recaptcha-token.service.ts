@@ -7,8 +7,6 @@ import { Observable } from 'rxjs';
 })
 export class RecaptchaTokenService {
 
-  token$ = new Subject<string>();
-
   constructor(private recaptchaV3Service: ReCaptchaV3Service) {
   }
 
