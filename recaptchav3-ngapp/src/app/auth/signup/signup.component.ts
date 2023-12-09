@@ -1,8 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // Import HttpClient
-import RecaptchaResponse from '../../interfaces/RecaptchaResponse'; // Import the RecaptchaResponse interface
-import { RecaptchaTokenService } from 'src/app/services/recaptcha-token.service';
-import { first } from 'rxjs';
+import { SignUpService } from 'src/app/services/sign-up.service';
 
 @Component({
   selector: 'sv-signup',
@@ -16,7 +14,7 @@ export class SignupComponent implements OnInit {
   score: number | undefined;    // Add a property for score
   errorCodes: string[] = [];    // Add a property for error codes
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private recaptchaTokenService: RecaptchaTokenService) {
+  constructor(private signUpService: SignUpService) {
   }
 
   async ngOnInit() {
@@ -26,57 +24,71 @@ export class SignupComponent implements OnInit {
   onSubmit() {
     console.log('Form data', this.formData);
 
-    // Send the form data including the token to your /register endpoint
-    // Replace 'your_api_endpoint' with the actual API endpoint URL
-    // https://localhost:7199/signup - .NET 8
-    // http://localhost:6060/signup - NodeJS TypeScrip
+    this.signUpService.signup(this.formData).subscribe(({ success, data, error }) => {
+      if (success) {
+        this.onSignupSuccess(data);
+      } else {
+        this.onSignupError(error);
+      }
+    });
+  }
 
-    const dotNetURL = 'https://localhost:7199/signup';
-    const nodeJsURL = 'http://localhost:6060/signup';
+  onSignupError(error: any) {
+    this.success = false;
+    this.score = -1;
 
-    this.recaptchaTokenService.getRecaptchaToken();
+    console.error('Registration failed', error);
+  }
 
-    this.recaptchaTokenService.token$.pipe(first())
-      .subscribe((token: string | undefined) => {
-
-        if (token) {
-          this.formData.recaptchaToken = token;
-
-          // Never do this in production! Component should only render UI
-          // Service should handle the API calls
-          this.http.post(nodeJsURL, this.formData)
-            .subscribe({
-              next: (response: any) => {
-                console.log('POST response:', response);
-                const parsedResponse: RecaptchaResponse = response as RecaptchaResponse;
-                console.log('Registration successful', response, parsedResponse.data.score);
-
-                // Remove newline characters from the data property
-                const parsedData = (typeof response.data === 'object') ? response.data : JSON.parse(response.data.replace(/\n/g, ''));
-
-                // Now, parsedData contains the JSON object without newline characters
-                console.log(parsedData);
-
-                // Access the success and score properties from parsedData
-                this.success = parsedData.success;
-                this.score = parsedData.score;
-
-                if (!this.success) {
-                  this.errorCodes = parsedData['error-codes'];
-                }
-              },
-              error: (error) => {
-                console.error('Registration failed', error);
-                // Handle error response here
-              }
-            });
-        }
-        console.log(`onSubmit() :: Token [${token}] generated at ${new Date().toTimeString()}`);
-      });
-
+  onSignupSuccess(parsedData: any) {
+    this.success = parsedData.success;
+    this.score = parsedData.score;
   }
 
 }
+
+// const dotNetURL = 'https://localhost:7199/signup';
+//     const nodeJsURL = 'http://localhost:6060/signup';
+
+// this.recaptchaTokenService.getRecaptchaToken();
+
+// this.recaptchaTokenService.token$.pipe(first())
+// .subscribe((token: string | undefined) => {
+
+//   if (token) {
+//     this.formData.recaptchaToken = token;
+
+//     // Never do this in production! Component should only render UI
+//     // Service should handle the API calls
+//     this.http.post(nodeJsURL, this.formData)
+//       .subscribe({
+//         next: (response: any) => {
+//           console.log('POST response:', response);
+//           const parsedResponse: RecaptchaResponse = response as RecaptchaResponse;
+//           console.log('Registration successful', response, parsedResponse.data.score);
+
+//           // Remove newline characters from the data property
+//           const parsedData = (typeof response.data === 'object') ? response.data : JSON.parse(response.data.replace(/\n/g, ''));
+
+//           // Now, parsedData contains the JSON object without newline characters
+//           console.log(parsedData);
+
+//           // Access the success and score properties from parsedData
+//           this.success = parsedData.success;
+//           this.score = parsedData.score;
+
+//           if (!this.success) {
+//             this.errorCodes = parsedData['error-codes'];
+//           }
+//         },
+//         error: (error) => {
+//           console.error('Registration failed', error);
+//           // Handle error response here
+//         }
+//       });
+//   }
+//   console.log(`onSubmit() :: Token [${token}] generated at ${new Date().toTimeString()}`);
+// });
 
 
 // // This function should make synchronous calls to the recaptchaV3Service
